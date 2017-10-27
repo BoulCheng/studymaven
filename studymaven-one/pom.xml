@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>study-maven</artifactId>
+        <groupId>com.zlb</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>studymaven-one</artifactId>
+    <!--默认为这个打包方式-->
+    <!--<packaging>jar</packaging>-->
+
+    <properties>
+        <spring.version>4.1.6.RELEASE</spring.version>
+        <log4j.version>1.2.12</log4j.version>
+    </properties>
+    <dependencies>
+        <!--不会被打包进zip的lib-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+    </dependencies>
+
+    <!--使用profile包围属性 activation为启用该属性 相同的env属性名值不同-->
+    <!--  <profiles>
+        <profile>
+          <id>dev</id>
+          <properties>  该properties与上面的properties相同
+            <env>dev</env>
+          </properties>
+          <activation>
+            <activeByDefault>true</activeByDefault>
+          </activation>
+        </profile>
+        <profile>
+          <id>test</id>
+          <properties>
+            <env>test</env>
+          </properties>
+        </profile>
+        <profile>
+          <id>prod</id>
+          <properties>
+            <env>prod</env>
+          </properties>
+        </profile>
+      </profiles>-->
+
+    <build>
+        <!--生成的构件名称默认为artifactId.version-->
+        <!--<finalName>hug-manage</finalName>-->
+        <!--在directory指定的资源中使用maven属性(内置属性 pom属性等)-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <!--如果要使用属性文件中的属性值则要把文件列在filters-->
+        <!--<filters>
+          <filter>src/main/resources/filters/${env}.properties</filter>
+        </filters>-->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!--修改输出目录 默认在target/-->
+                    <outputDirectory>${project.build.directory}/${project.artifactId}</outputDirectory>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <!--增加classpath路径-->
+                            <addClasspath>true</addClasspath>
+                            <!--前缀为lib 因为assembly.xml文件将依赖放入了lib 所以classpath需要加前缀lib-->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.zlb.ProviderBoot</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                        <!--A list of key/value pairs to add to the manifest.-->
+                        <manifestEntries>
+                            <Class-Path>./config/</Class-Path>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <!--使用默认的groupId-->
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4.1</version>
+                <executions>
+                    <execution>
+                        <id>make-zip</id>
+                        <!-- 绑定到package生命周期阶段上 -->
+                        <phase>package</phase>
+                        <goals>
+                            <!-- maven-assembly-plugin的single目标绑定到package生命周期阶段上 -->
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors> <!--描述文件路径 -->
+                                <descriptor>src/main/resources/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

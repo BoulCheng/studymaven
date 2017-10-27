@@ -1,0 +1,50 @@
+<assembly>
+	<!--build finalName-id.zip-->
+	<id>bin</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<!-- <includeBaseDirectory>true</includeBaseDirectory>-->
+
+	<!--将依赖放入lib-->
+	<dependencySets>
+		<dependencySet>
+			<!--Determines whether the artifact produced during the current project's build should be included in this dependency set.-->
+			<!--确定在当前项目构建期间生成的工件是否应包含在此依赖项集中-->
+			<!--即该构件过程生成的finalName.jar不放入lib-->
+			<useProjectArtifact>false</useProjectArtifact>
+			<outputDirectory>lib</outputDirectory>
+		</dependencySet>
+	</dependencySets>
+	<fileSets>
+		<!--将配置文件打包到根目录 根目录为：finalName-id/finalName-->
+		<fileSet>
+			<!--将directory(pom文件定义的将outputDirectory，jar包的输出位置)放入outputDirectory-->
+			<directory>${project.build.directory}/${project.artifactId}</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>**/*.*</include>
+			</includes>
+			<excludes>
+				<exclude>assembly.xml</exclude>
+			</excludes>
+		</fileSet>
+		<!--将项目jar 打到zip中-->
+		<fileSet>
+			<directory>${project.build.directory}</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/resources</directory>
+			<outputDirectory>/bin</outputDirectory>
+			<!--只有列在includes里的文件才会放入zip包中-->
+			<includes>
+				<include>*.sh</include>
+				<include>*.bat</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>
