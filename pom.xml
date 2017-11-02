@@ -14,5 +14,20 @@
         <module>studymaven-two</module>
     </modules>
 
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <!--Compiler插件的缺省source和target版本值均为1.5版本。
+                    换句话说，Compiler插件会假设你所有的Java源代码遵循Java 1.5，目标为Java 1.5 JVM。-->
+                    <source>1.7</source><!--指定用哪个版本的编译器对java源码进行编译-->
+                    <target>1.7</target><!--指定生成的class文件将保证和哪个版本的虚拟机进行兼容。--><!--如果未正确配置javacTask: 源发行版 1.7 需要目标发行版 1.7-->
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
